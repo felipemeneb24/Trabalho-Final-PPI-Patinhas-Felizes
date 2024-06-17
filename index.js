@@ -539,7 +539,7 @@ app.get('/listarAdocoes', usuarioAutenticado, (requisicao, resposta) => {
     resposta.write('</head>');
     resposta.write('<body>');
     resposta.write('<div class="container">');
-    resposta.write('<h3>Lista de Adoções Realizadas</h3>');
+    resposta.write('<h3>Interesse em Adoções </h3>');
     resposta.write('<table class="table table-dark table-striped">');
     resposta.write('<thead>');
     resposta.write('<tr>');
