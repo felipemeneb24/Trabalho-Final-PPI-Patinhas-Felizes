@@ -241,7 +241,7 @@ function autenticarUsuario(requisicao, resposta) {
         requisicao.session.usuarioAutenticado = true;
         resposta.cookie('dataUltimoAcesso', new Date().toLocaleString(), {
             httpOnly: true,
-            maxAge: 1000 * 60 * 30   // 30 minutos de sesssão 
+            maxAge: 1000 * 60 * 30
         });
         resposta.redirect('/');
     }
@@ -308,6 +308,10 @@ app.get('/listarInteressados', usuarioAutenticado, (req, resp) => {
     resp.write('</table>');
     resp.write('<button><a href="/CadastrodeInteressados.html">Cadastrar Novo Interessado</a></button>');
     resp.write('<button><a href="/index.html">Voltar</a></button>');
+    resp.write('<br>');
+    if (req.cookies.dataUltimoAcesso) {
+        resp.write('<p>Ultimo acesso: ' + req.cookies.dataUltimoAcesso + '</p>');
+    }
     resp.write('</body>');
     resp.write('<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>')
     resp.write('</html>');
@@ -342,6 +346,10 @@ app.get('/ListarPets', usuarioAutenticado, (req, resp) => {
     resp.write('</table>');
     resp.write('<button><a href="/CadastrodePets.html">Cadastrar Novo Pet</a></button>');
     resp.write('<button><a href="/index.html">Voltar</a></button>');
+    resp.write('<br>');
+    if (req.cookies.dataUltimoAcesso) {
+        resp.write('<p>Ultimo acesso: ' + req.cookies.dataUltimoAcesso + '</p>');
+    }
     resp.write('</body>');
     resp.write('<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>')
     resp.write('</html>');
@@ -384,7 +392,7 @@ app.use('/Adotar', usuarioAutenticado, (requisicao, resposta) => {
             <legend>Adotar Pet </legend>
             <div class="col-md-4">
                 <label for="validationCustom01" class="form-label">Interessado:</label>
-                <select id="validationCustom01" name="nomepessoa" required>
+                <select id="validationCustom01" name="pessoaInteressada" required>
                     <option value="">Escolha um interessado...</option>`)
     for (let i = 0; i < listaInteressados.length; i++) {
         resposta.write(`<option value="${listaInteressados[i].nome}">${listaInteressados[i].nome}</option>`)
@@ -393,7 +401,7 @@ app.use('/Adotar', usuarioAutenticado, (requisicao, resposta) => {
             </div>
             <div class="col-md-4">
                 <label for="validationCustom02" class="form-label">Pet:</label>
-                <select id="validationCustom01" name="nomepetadocao" required>
+                <select id="validationCustom01" name="petInteresse" required>
                     <option value="">Escolha um Pet...</option>`)
     for (let i = 0; i < listaPets.length; i++) {
         resposta.write(`<option value="${listaPets[i].nomePet}">${listaPets[i].nomepet}</option>`)
@@ -416,42 +424,30 @@ app.use('/Adotar', usuarioAutenticado, (requisicao, resposta) => {
 
 app.post('/Registrarinteresse', usuarioAutenticado, RegistrodeInteresse);
 function RegistrodeInteresse(requisicao, resposta) {
-    var Interessado = requisicao.body.nomepessoa;
-    var pet = requisicao.body.nomepetadocao;
+    var pessoaInteressada = requisicao.body.pessoaInteressada;
+    var petInteresse = requisicao.body.petInteresse;
 
-    if (Interessado != "" && pet != "") {
-        let racaInteresse = "";
-        let idadeInteresse = "";
-
-        // Busca pelo pet na lista de pets
-        let j = 0;
-        while (j < listaPets.length && pet != listaPets[j].nomepet) {
-            j++;
+    if (petInteresse != "" && pessoaInteressada != "") {
+        let j = 0
+        while (petInteresse != listaPets[j].nomePet && j < listaPets.length) {
+            j++
         }
         if (j < listaPets.length) {
-            // Atualiza pet com o nome encontrado na listaPets
-            pet = listaPets[j].nomepet;
-            racaInteresse = listaPets[j].raca;
-            idadeInteresse = listaPets[j].idade;
+            var racaInteresse = listaPets[j].raca;
+            var idadeInteresse = listaPets[j].idade;
         }
-
-        let emailInteressado = "";
-        let telefoneInteressado = "";
-        // Busca pelo interessado na lista de interessados
-        let u = 0;
-        while (u < listaInteressados.length && Interessado != listaInteressados[u].nome) {
+        let u = 0
+        while (pessoaInteressada != listaPessoas[u].nome && u < listaPessoas.length) {
             u++;
         }
-        if (u < listaInteressados.length) {
-            emailInteressado = listaInteressados[u].email;
-            telefoneInteressado = listaInteressados[u].telefone;
+        if (j < listaPets.length) {
+            var emailInteressado = listaInteressados[u].email;
+            var telefoneInteressado = listaInteressados[u].telefone;
         }
-
         var dataRegistro = new Date().toLocaleString();
-
         listaadocao.push({
-            pessoaInteressada: Interessado,
-            petInteresse: pet,
+            pessoaInteressada: pessoaInteressada,
+            petInteresse: petInteresse,
             emailInteressado: emailInteressado,
             telefoneInteressado: telefoneInteressado,
             racaInteresse: racaInteresse,
