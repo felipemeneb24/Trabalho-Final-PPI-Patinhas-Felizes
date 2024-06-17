@@ -404,7 +404,7 @@ app.use('/Adotar', usuarioAutenticado, (requisicao, resposta) => {
                 <select id="validationCustom01" name="petInteresse" required>
                     <option value="">Escolha um Pet...</option>`)
     for (let i = 0; i < listaPets.length; i++) {
-        resposta.write(`<option value="${listaPets[i].nomePet}">${listaPets[i].nomepet}</option>`)
+        resposta.write(`<option value="${listaPets[i].nomepet}">${listaPets[i].nomepet}</option>`)
     }
     resposta.write(`</select>
             </div>
@@ -429,7 +429,7 @@ function RegistrodeInteresse(requisicao, resposta) {
 
     if (petInteresse != "" && pessoaInteressada != "") {
         let j = 0
-        while (petInteresse != listaPets[j].nomePet && j < listaPets.length) {
+        while (petInteresse != listaPets[j].nomepet && j < listaPets.length) {
             j++
         }
         if (j < listaPets.length) {
@@ -437,7 +437,7 @@ function RegistrodeInteresse(requisicao, resposta) {
             var idadeInteresse = listaPets[j].idade;
         }
         let u = 0
-        while (pessoaInteressada != listaPessoas[u].nome && u < listaPessoas.length) {
+        while (pessoaInteressada != listaInteressados[u].nome && u < listaInteressados.length) {
             u++;
         }
         if (j < listaPets.length) {
@@ -505,7 +505,7 @@ function RegistrodeInteresse(requisicao, resposta) {
                             <select id="validationCustom01" name="nomepetadocao" required>
                                 <option value="">Escolha um Pet...</option>`)
         for (let i = 0; i < listaPets.length; i++) {
-            resposta.write(`<option value="${listaPets[i].nomePet}">${listaPets[i].nomepet}</option>`)
+            resposta.write(`<option value="${listaPets[i].nomepet}">${listaPets[i].nomepet}</option>`)
         }
         resposta.write(`</select>
                         </div>
